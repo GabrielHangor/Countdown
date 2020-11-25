@@ -99,6 +99,7 @@ button {
   color: white;
   cursor: pointer;
   outline: none;
+  font-family: "Goldman", cursive;
 }
 
 button:hover {
