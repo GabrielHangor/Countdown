@@ -16,6 +16,7 @@ let countdownTitle = "";
 let countdownDate = "";
 let countdownValue = Date;
 let countdownActive;
+let savedCountDown;
 
 // In milisec
 const second = 1000;
@@ -61,6 +62,13 @@ function updateCountdown(e) {
   countdownTitle = e.srcElement[0].value;
   countdownDate = e.srcElement[1].value;
 
+  savedCountDown = {
+    title: countdownTitle,
+    date: countdownDate,
+  };
+
+  localStorage.setItem("countdown", JSON.stringify(savedCountDown));
+
   // Get current date in milsec, updateDOM
   countdownValue = new Date(countdownDate).getTime();
   updateDOM();
@@ -72,7 +80,7 @@ function reset() {
   countdownEl.hidden = true;
   input.hidden = false;
   completeEl.hidden = true;
-
+  localStorage.clear('countdown');
   clearInterval(countdownActive);
   countdownTitle = "";
   countdownDate = "";
@@ -80,7 +88,23 @@ function reset() {
   titleEl.value = "";
 }
 
+// Get the countdown from localstorage if its there
+function restorePreviousCountdown() {
+  if (localStorage.getItem("countdown")) {
+    input.hidden = true;
+    savedCountDown = JSON.parse(localStorage.getItem("countdown"));
+    countdownTitle = savedCountDown.title;
+    countdownDate = savedCountDown.date;
+    countdownValue = new Date(countdownDate).getTime();
+    updateDOM();
+  }
+}
+
 // Event Listeners
 countdownForm.addEventListener("submit", updateCountdown);
 countdownBtn.addEventListener("click", reset);
 completeEl.addEventListener("click", reset);
+
+
+// On load check the local storage
+restorePreviousCountdown();
